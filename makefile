@@ -3,4 +3,4 @@ all:
 debug:
 	gcc termshot.c -g -o termshot.out
 install:
-	cp -p termshot.out /usr/local/bin/termshot
+	cp -pr termshot.out /usr/local/bin/termshot
