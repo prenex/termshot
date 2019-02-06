@@ -12,10 +12,13 @@
 #include "stdio.h"
 #include "ctype.h"
 #include "string.h"
-#include "time.h"
+#include "dirent.h"
 #include "stdlib.h"
 
 #define BOOLE int
+
+/* Make higher if you screenshot automated and it starts to override! */
+#define MAX_OFILE_LEN 256
 
 /* Default files ("current" vty) */
 char *d_vcspath = "/dev/vcs";
@@ -25,12 +28,19 @@ char *d_vcsapath = "/dev/vcsa";
 char *n_vcspath = "/dev/vcs1";
 char *n_vcsapath = "/dev/vcsa1";
 
+/* Used only as a fallback - should never happen: */
+char *outfile_pattern = "tshot_%d.txt";
+
 int main(int argc, char **argv) {
 
 	/* Currenty used strings */
 	char *vcspath;
 	char *vcsapath;
 	BOOLE needfree;
+
+	/* Output file string handling vars */
+	char outfilename[MAX_OFILE_LEN];
+
 
 	/* Handle parameters */
 	if(argc == 2) {
@@ -73,28 +83,36 @@ int main(int argc, char **argv) {
 		needfree = 0; /* Shouldn't call free! */
 	}
 
+	/* TODO: Get column and row counts */
+
+	/* Create numbered output filename: tshot_<num> */
+	int num = 0;
+	DIR *d;
+	struct dirent *entry;
+	d = opendir(".");
+	if(d) {
+		/* See the biggest file entry corresponding to the pattern */
+		while((entry = readdir(d)) != NULL) {
+			printf("%s\n", entry->d_name);
+			int entrys_num = 0;
+			sscanf(entry->d_name, outfile_pattern, &entrys_num);
+			printf(" - entrys_num = %d\n", entrys_num);
+			if(entrys_num >= num) {
+				num = entrys_num + 1;
+			}
+		}
+		closedir(d);
+	}
+
+	/* This creates the filename: tshot_<num> */
+	snprintf(outfilename, MAX_OFILE_LEN, outfile_pattern, num);
+
+	/* Loop through lines of the screen */
 	/* TODO: Get screen memory data */
-
-	/* Create timespamped output filename: termshot_DATE_TIME */
-
-	time_t rawtime;
-	struct tm *timeinfo;
-	char outfilename[64];
-
-	time(&rawtime);
-	timeinfo = localtime(&rawtime);
-	strftime(outfilename, 64, "./tshot_%x_%X.txt", timeinfo);
-
 	/* TODO: Save screen memory data */
 
 	/* Notify user */
 	printf("Termshot saved: %s -> %s\n", vcspath, outfilename);
-
-	/* Cleanup */
-	if(needfree) {
-		free(vcspath);
-		free(vcsapath);
-	}
 
 	/* EXIT */
 	return 0;
