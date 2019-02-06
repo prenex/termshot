@@ -123,8 +123,9 @@ int main(int argc, char **argv) {
 	}
 
 	/* TODO: Get width and height */
-	w_width = 10;
-	w_height = 10;
+	w_width = 0;
+	w_height = 0;
+	
 
 	/* Create numbered output filename: tshot_<filenum> */
 	d = opendir(".");
