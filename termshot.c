@@ -22,6 +22,9 @@
 
 #define BOOLE int
 
+/* Ensure this is 8 bits */
+#define UINT_8 unsigned char /* uint8_t? */
+
 /* Make higher if you screenshot automated and it starts to override! */
 #define MAX_OFILE_LEN 256
 
@@ -43,6 +46,9 @@ char *outfile_pattern = "tshot_%d.txt";
 /* The target vty (0..9) as parameter */
 char vty_target_num;
 
+/* Used for small stuffz */
+int i;
+
 /* Used for indexing last character of a cstring */
 int lastindex;
 
@@ -59,11 +65,12 @@ int entrys_num;
 /* File handles */
 
 FILE *vcs;
+FILE *vcsa;
 FILE *outf;
 
 /* Dimensions of the window for the vty */
-unsigned int w_width;
-unsigned int w_height;
+UINT_8 w_width;
+UINT_8 w_height;
 
 /* Currenty used strings */
 char *vcspath;
@@ -122,11 +129,6 @@ int main(int argc, char **argv) {
 		needfree = 0; /* Shouldn't call free! */
 	}
 
-	/* TODO: Get width and height */
-	w_width = 0;
-	w_height = 0;
-	
-
 	/* Create numbered output filename: tshot_<filenum> */
 	d = opendir(".");
 	/* See the biggest file entrys filenum corresponding to the pattern */
@@ -146,7 +148,25 @@ int main(int argc, char **argv) {
 	/* This creates the filename: tshot_<filenum> */
 	snprintf(outfilename, MAX_OFILE_LEN, outfile_pattern, filenum);
 
-	/* Process file */
+	/* TODO: Get source width and height */
+	w_width = 0;
+	w_height = 0;
+	vcsa = fopen(vcsapath, "r");
+	if(vcsa) {
+		i = fread((void*) &w_height, sizeof(UINT_8), 1, vcsa);
+		i += fread((void*) &w_width, sizeof(UINT_8), 1, vcsa);
+		if(i != 2) {
+			/* ULTRADEFENSIVE: Ensure we read two bytes */
+			fprintf(stderr, "FATAL: Bad UINT_8 type - not being 8 bits!");
+			w_width = 0;
+			w_height = 0;
+		}
+		fclose(vcsa);
+	} else {
+		fprintf(stderr, "Cannot open %s, try with proper rights!\n", vcsapath);
+	}
+
+	/* Process file if we could process width-height */
 	if(w_width > 0 && w_height > 0) {
 		/* Allocate line-buffer */
 		/* +1 more is added so that the cstring zero terminator is there */
@@ -174,7 +194,7 @@ int main(int argc, char **argv) {
 			fclose(vcs);
 
 			/* Notify user */
-			printf("Termshot saved: %s -> %s\n", vcspath, outfilename);
+			printf("Termshot saved: %s -> %s (%d, %d)\n", vcspath, outfilename, w_width, w_height);
 		} else {
 			fprintf(stderr, "Cannot open %s, try with proper rights!\n", vcspath);
 		}
