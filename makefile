@@ -1,6 +1,6 @@
 all:
-	gcc termshot.c -O2 -o termshot
+	gcc termshot.c -O2 -o termshot.out
 debug:
-	gcc termshot.c -g -o termshot
+	gcc termshot.c -g -o termshot.out
 install:
-	cp -p termshot /usr/local/bin/
+	cp -p termshot.out /usr/local/bin/termshot
