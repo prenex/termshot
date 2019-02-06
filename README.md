@@ -41,6 +41,6 @@ Build and install:
 
 Simple usage:
 
-	termshot 1        # to termshow vty1
-	termshot          # to termshow current vty
+	termshot 1        # to termshot vty1
+	termshot          # to termshot current vty
 	termshot --help   # to show help
