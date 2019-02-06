@@ -1,0 +1,3 @@
+# termshot
+
+Screenshot your terminal!
