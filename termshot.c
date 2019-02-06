@@ -148,7 +148,7 @@ int main(int argc, char **argv) {
 	/* This creates the filename: tshot_<filenum> */
 	snprintf(outfilename, MAX_OFILE_LEN, outfile_pattern, filenum);
 
-	/* TODO: Get source width and height */
+	/* Get source width and height */
 	w_width = 0;
 	w_height = 0;
 	vcsa = fopen(vcsapath, "r");
