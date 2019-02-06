@@ -30,3 +30,17 @@ Known issues
 * Graphics terminals are not working
 
 * Non-ascii characters - especially those non in the basic-multilingual-plane
+
+Usage
+-----
+
+Build and install:
+
+	make
+	sudo make install
+
+Simple usage:
+
+	termshot 1        # to termshow vty1
+	termshot          # to termshow current vty
+	termshot --help   # to show help
