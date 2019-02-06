@@ -177,7 +177,8 @@ int main(int argc, char **argv) {
 			outf = fopen(outfilename, "w");
 			if(outf) {
 				/* Loop through lines of the screen with binary read */
-				while((fread((void*)linebuffer, 1, w_width, vcs) > 0) && (w_height--)) {
+				i = w_height;
+				while((fread((void*)linebuffer, 1, w_width, vcs) > 0) && (i--)) {
 					linebuffer[w_width] = ' '; /* Extra space is needed for algo */
 
 					/* Overwrite whitespace with 0 as early as possible */
